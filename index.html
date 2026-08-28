@@ -1,11 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=devide-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYBOUND RUNNER</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    ようこそ私のページへ！
+    <main class="game-shell">
+        <header class="game-header">
+            <div>
+                <p class="eyebrow">MINI PLATFORMER / MVP</p>
+                <h1>SKYBOUND <span>RUNNER</span></h1>
+            </div>
+            <button id="restartButton" class="restart-button" type="button">↻ リスタート</button>
+        </header>
+
+        <section class="game-card" aria-label="横スクロールアクションゲーム">
+            <div class="hud">
+                <div><span>COINS</span><strong id="coinCount">0 / 0</strong></div>
+                <div><span>STATUS</span><strong id="statusText">RUN!</strong></div>
+            </div>
+            <canvas id="gameCanvas" width="960" height="540"></canvas>
+            <div class="game-message hidden" id="gameMessage">
+                <p class="message-kicker">MISSION COMPLETE</p>
+                <h2 id="messageTitle">ゴールに到着！</h2>
+                <p id="messageDetail">おめでとうございます。</p>
+                <button id="messageButton" type="button">もう一度プレイ</button>
+            </div>
+        </section>
+
+        <footer class="controls">
+            <span><kbd>A</kbd><kbd>D</kbd> / <kbd>←</kbd><kbd>→</kbd> 移動</span>
+            <span><kbd>SPACE</kbd> ジャンプ</span>
+            <span class="tip">コインを集めて旗を目指そう</span>
+        </footer>
+    </main>
+    <script src="script.js"></script>
 </body>
 </html>
