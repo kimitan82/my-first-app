@@ -37,9 +37,11 @@
         </footer>
 
         <div class="touch-controls" aria-label="モバイル操作ボタン">
-            <button type="button" class="touch-button" id="controlLeft" aria-label="左へ移動">◀</button>
-            <button type="button" class="touch-button" id="controlJump" aria-label="ジャンプ">▲</button>
-            <button type="button" class="touch-button" id="controlRight" aria-label="右へ移動">▶</button>
+            <div class="touch-controls-left">
+                <button type="button" class="touch-button" id="controlLeft" aria-label="左へ移動">◀</button>
+                <button type="button" class="touch-button" id="controlRight" aria-label="右へ移動">▶</button>
+            </div>
+            <button type="button" class="touch-button touch-button-jump" id="controlJump" aria-label="ジャンプ">▲</button>
         </div>
     </main>
     <script src="script.js"></script>
