@@ -5,6 +5,9 @@ const statusText = document.getElementById("statusText");
 const gameMessage = document.getElementById("gameMessage");
 const messageTitle = document.getElementById("messageTitle");
 const messageDetail = document.getElementById("messageDetail");
+const leftButton = document.getElementById("controlLeft");
+const rightButton = document.getElementById("controlRight");
+const jumpButton = document.getElementById("controlJump");
 
 const worldWidth = 4200;
 const keys = {};
@@ -146,9 +149,47 @@ function draw() {
     ctx.restore();
 }
 
+function setControlState(controlName, isPressed) {
+    if (controlName === "left") {
+        keys.ArrowLeft = isPressed;
+        keys.a = isPressed;
+        leftButton.classList.toggle("active", isPressed);
+    }
+    if (controlName === "right") {
+        keys.ArrowRight = isPressed;
+        keys.d = isPressed;
+        rightButton.classList.toggle("active", isPressed);
+    }
+    if (controlName === "jump") {
+        keys[" "] = isPressed;
+        keys.ArrowUp = isPressed;
+        keys.w = isPressed;
+        jumpButton.classList.toggle("active", isPressed);
+    }
+}
+
+function attachTouchControl(button, controlName) {
+    const activate = event => {
+        event.preventDefault();
+        setControlState(controlName, true);
+    };
+    const deactivate = event => {
+        event.preventDefault();
+        setControlState(controlName, false);
+    };
+
+    button.addEventListener("pointerdown", activate);
+    button.addEventListener("pointerup", deactivate);
+    button.addEventListener("pointerleave", deactivate);
+    button.addEventListener("pointercancel", deactivate);
+}
+
 function loop() { update(); draw(); requestAnimationFrame(loop); }
 window.addEventListener("keydown", e => { keys[e.key] = true; if ([" ", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) e.preventDefault(); });
 window.addEventListener("keyup", e => { keys[e.key] = false; });
 document.getElementById("restartButton").addEventListener("click", reset);
 document.getElementById("messageButton").addEventListener("click", reset);
+attachTouchControl(leftButton, "left");
+attachTouchControl(rightButton, "right");
+attachTouchControl(jumpButton, "jump");
 reset(); loop();
