@@ -11,6 +11,7 @@ const jumpButton = document.getElementById("controlJump");
 
 const worldWidth = 4200;
 const keys = {};
+const touchState = { left: false, right: false, jump: false };
 let player;
 let cameraX = 0;
 let coins;
@@ -50,7 +51,9 @@ function endGame(state) {
 
 function update() {
     if (gameState !== "playing") return;
-    const left = keys.ArrowLeft || keys.a, right = keys.ArrowRight || keys.d;
+    const left = keys.ArrowLeft || keys.a || touchState.left;
+    const right = keys.ArrowRight || keys.d || touchState.right;
+    const jumpPressed = keys[" "] || keys.ArrowUp || keys.w || touchState.jump;
     player.vx = (right ? 4.4 : 0) - (left ? 4.4 : 0); player.vy += .55; player.vy = Math.min(player.vy, 13);
     const oldBottom = player.y + player.h; player.x = Math.max(0, Math.min(worldWidth - player.w, player.x + player.vx)); player.y += player.vy; player.grounded = false;
     platforms.forEach(p => {
@@ -58,7 +61,7 @@ function update() {
             player.y = p.y - player.h; player.vy = 0; player.grounded = true;
         }
     });
-    if ((keys[" "] || keys.ArrowUp || keys.w) && player.grounded) { player.vy = -12; player.grounded = false; }
+    if (jumpPressed && player.grounded) { player.vy = -12; player.grounded = false; }
     enemies.forEach(e => { e.x += e.vx; if (e.x < e.min || e.x > e.max) e.vx *= -1; if (overlaps(player, e)) endGame("lost"); });
     coins.forEach(c => { if (!c.taken && Math.hypot(player.x + player.w / 2 - c.x, player.y + player.h / 2 - c.y) < 28) c.taken = true; });
     if (player.y > canvas.height + 100) endGame("lost");
@@ -151,16 +154,19 @@ function draw() {
 
 function setControlState(controlName, isPressed) {
     if (controlName === "left") {
+        touchState.left = isPressed;
         keys.ArrowLeft = isPressed;
         keys.a = isPressed;
         leftButton.classList.toggle("active", isPressed);
     }
     if (controlName === "right") {
+        touchState.right = isPressed;
         keys.ArrowRight = isPressed;
         keys.d = isPressed;
         rightButton.classList.toggle("active", isPressed);
     }
     if (controlName === "jump") {
+        touchState.jump = isPressed;
         keys[" "] = isPressed;
         keys.ArrowUp = isPressed;
         keys.w = isPressed;
@@ -171,6 +177,7 @@ function setControlState(controlName, isPressed) {
 function attachTouchControl(button, controlName) {
     const activate = event => {
         event.preventDefault();
+        button.setPointerCapture?.(event.pointerId);
         setControlState(controlName, true);
     };
     const deactivate = event => {
@@ -182,6 +189,9 @@ function attachTouchControl(button, controlName) {
     button.addEventListener("pointerup", deactivate);
     button.addEventListener("pointerleave", deactivate);
     button.addEventListener("pointercancel", deactivate);
+    button.addEventListener("touchstart", activate, { passive: false });
+    button.addEventListener("touchend", deactivate, { passive: false });
+    button.addEventListener("touchcancel", deactivate, { passive: false });
 }
 
 function loop() { update(); draw(); requestAnimationFrame(loop); }
